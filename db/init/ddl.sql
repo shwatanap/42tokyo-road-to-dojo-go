@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     id int UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(120) NOT NULL,
     token VARCHAR(36) NOT NULL UNIQUE,
-    hight_score int UNSIGNED,
-    coint int UNSIGNED
+    hight_score int,
+    coin int
 );
 
 CREATE TABLE IF NOT EXISTS rarities (
