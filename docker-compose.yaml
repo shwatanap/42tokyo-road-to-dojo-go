@@ -1,6 +1,26 @@
 version: "3"
 
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /bin/sh -c "go run pkg/main.go"
+    environment:
+      DB_USER: root
+      DB_PASS: ca-tech-dojo
+      DB_INSTANCE_CONNECTION_NAME: mysql:3306
+      DB_NAME: 42game
+      ENVIRONMENT: dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - "mysql"
+
   redis:
     image: redis:5.0
     ports:

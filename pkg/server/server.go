@@ -4,7 +4,12 @@ import (
 	"log"
 	"net/http"
 
-	"42tokyo-road-to-dojo-go/pkg/server/handler"
+	_ "github.com/go-sql-driver/mysql"
+
+	"42tokyo-road-to-dojo-go/pkg/http/middleware"
+	"42tokyo-road-to-dojo-go/pkg/infra/sql"
+	"42tokyo-road-to-dojo-go/pkg/presen/handler"
+	"42tokyo-road-to-dojo-go/pkg/wire"
 )
 
 // Serve HTTPサーバを起動する
@@ -12,6 +17,11 @@ func Serve(addr string) {
 
 	/* ===== URLマッピングを行う ===== */
 	http.HandleFunc("/setting/get", get(handler.HandleSettingGet()))
+	db := sql.NewDriver()
+	userHandler := wire.InitUserHandler(db)
+	userCreate := http.HandlerFunc(userHandler.Create)
+	mUserCreate := middleware.Logger(userCreate)
+	http.HandleFunc("/user/create", post(mUserCreate))
 
 	// TODO: 認証を行うmiddlewareを実装する
 	// middlewareは pkg/http/middleware パッケージを利用する
