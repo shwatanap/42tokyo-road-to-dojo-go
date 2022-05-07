@@ -1,7 +1,7 @@
 //go:build wireinject
 // +build wireinject
 
-package main
+package wire
 
 import (
 	"database/sql"
@@ -13,7 +13,7 @@ import (
 	"42tokyo-road-to-dojo-go/pkg/usecase"
 )
 
-func initUserHandler(driver *sql.DB) handler.UserHandler {
+func InitUserHandler(driver *sql.DB) handler.UserHandler {
 	wire.Build(
 		repository.NewUserRepository,
 		usecase.NewUserUsecase,
