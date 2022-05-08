@@ -20,9 +20,9 @@ func Serve(addr string) {
 	db := sql.NewDriver()
 	userHandler := wire.InitUserHandler(db)
 	userCreate := http.HandlerFunc(userHandler.Create)
-	mUserCreate := middleware.Logger(userCreate)
-	http.HandleFunc("/user/create", post(mUserCreate))
-
+	http.HandleFunc("/user/create", post(middleware.Logger(userCreate)))
+	userGet := http.HandlerFunc(userHandler.Get)
+	http.HandleFunc("/user/get", get(middleware.Logger(userGet)))
 	// TODO: 認証を行うmiddlewareを実装する
 	// middlewareは pkg/http/middleware パッケージを利用する
 	// http.HandleFunc("/user/get",

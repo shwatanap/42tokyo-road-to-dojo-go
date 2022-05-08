@@ -15,6 +15,7 @@ import (
 
 type UserHandler interface {
 	Create(http.ResponseWriter, *http.Request)
+	Get(http.ResponseWriter, *http.Request)
 }
 
 type userHandler struct {
@@ -60,5 +61,37 @@ func (uh *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if err := je.Encode(res); err != nil {
 		zap.Error(err)
 		return
+	}
+}
+
+func (uh *userHandler) Get(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		zap.Error(customError.ErrMethodNotFound)
+		return
+	}
+
+	token := r.Header.Get("X-Token")
+	if token == "" {
+		zap.Error(customError.ErrTokenNotFound)
+	}
+
+	targetUser, err := uh.userUsecase.Get(r.Context(), token)
+
+	if err != nil {
+		zap.Error(err)
+		return
+	}
+
+	res := response.UserGetResponse{
+		Name: targetUser.Name,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	je := json.NewEncoder(w)
+	if err := je.Encode(res); err != nil {
+		zap.Error(err)
 	}
 }
