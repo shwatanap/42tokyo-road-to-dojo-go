@@ -75,6 +75,7 @@ func (uh *userHandler) Get(w http.ResponseWriter, r *http.Request) {
 	if token == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		logger.ErrorLogging("GET user/get: x-token not found error", customError.ErrTokenNotFound, r)
+		return
 	}
 
 	targetUser, err := uh.userUsecase.Get(r.Context(), token)
