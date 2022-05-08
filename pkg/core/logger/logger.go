@@ -19,3 +19,14 @@ func HttpLogging(msg string, r *http.Request, start time.Time, latency int64) {
 		zap.Int64("latency", latency),
 	)
 }
+
+func ErrorLogging(msg string, err error, r *http.Request) {
+	logger, _ := zap.NewProduction()
+	logger.Error(
+		msg,
+		zap.Error(err),
+		zap.String("method", r.Method),
+		zap.String("host", r.Host),
+		zap.String("path", r.URL.Path),
+	)
+}
