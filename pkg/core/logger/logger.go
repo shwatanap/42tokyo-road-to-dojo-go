@@ -8,7 +8,7 @@ import (
 )
 
 func HttpLogging(msg string, r *http.Request, start time.Time, latency int64) {
-	logger, _ := zap.NewProduction()
+	logger, _ := zap.NewDevelopment()
 	logger.Info(
 		msg,
 		// zap.String("OS", r.Context().Value(context.OsKey).(string)),
@@ -21,7 +21,7 @@ func HttpLogging(msg string, r *http.Request, start time.Time, latency int64) {
 }
 
 func ErrorLogging(msg string, err error, r *http.Request) {
-	logger, _ := zap.NewProduction()
+	logger, _ := zap.NewDevelopment()
 	logger.Error(
 		msg,
 		zap.Error(err),
