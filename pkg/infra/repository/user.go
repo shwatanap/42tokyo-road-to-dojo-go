@@ -56,7 +56,7 @@ func (ur *userRepository) Create(ctx context.Context, name string) (*entity.User
 }
 
 func (ur *userRepository) Get(ctx context.Context, token string) (*entity.User, error) {
-	const read = `SELECT name FROM users WHERE token = ?`
+	const read = `SELECT id, name, token, high_score, coin FROM users WHERE token = ?`
 
 	stmt, err := ur.db.PrepareContext(ctx, read)
 	if err != nil {
@@ -72,7 +72,7 @@ func (ur *userRepository) Get(ctx context.Context, token string) (*entity.User, 
 	}
 
 	ue := &entity.User{}
-	err = row.Scan(&ue.Name)
+	err = row.Scan(&ue.Id, &ue.Name, &ue.Token, &ue.HighScore, &ue.Coin)
 	if err != nil {
 		log.Println("Scan", err.Error())
 		return nil, err

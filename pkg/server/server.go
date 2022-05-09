@@ -19,6 +19,7 @@ func Serve(addr string) {
 	http.HandleFunc("/setting/get", get(handler.HandleSettingGet()))
 
 	db := sql.NewDriver()
+
 	userHandler := wire.InitUserHandler(db)
 	userCreate := http.HandlerFunc(userHandler.Create)
 	http.HandleFunc("/user/create", post(middleware.Layers(userCreate)))
@@ -26,6 +27,10 @@ func Serve(addr string) {
 	http.HandleFunc("/user/get", get(middleware.AuthLayers(userGet)))
 	userUpdate := http.HandlerFunc(userHandler.Update)
 	http.HandleFunc("/user/update", post(middleware.AuthLayers(userUpdate)))
+
+	collectionHandler := wire.InitCollectionHandler(db)
+	collectionList := http.HandlerFunc(collectionHandler.List)
+	http.HandleFunc("/collection/list", get(middleware.AuthLayers(collectionList)))
 
 	/* ===== サーバの起動 ===== */
 	log.Println("Server running...")
