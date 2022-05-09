@@ -29,7 +29,7 @@ func NewUserHandler(userUsecase usecase.UserUsecase) UserHandler {
 func (uh *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		logger.ErrorLogging("POST user/create: decode error", customError.ErrMethodNotFound, r)
+		logger.ErrorLogging("POST user/create: method not allowed", customError.ErrMethodNotFound, r)
 		return
 	}
 
