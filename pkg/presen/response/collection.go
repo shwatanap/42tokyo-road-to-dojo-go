@@ -1,10 +1,10 @@
 package response
 
 type CollectionListResponse struct {
-	Collections []CollectionType `json:"collections"`
+	Collections []CollectionItem `json:"collections"`
 }
 
-type CollectionType struct {
+type CollectionItem struct {
 	CollectionID string `json:"collection_id"`
 	Name         string `json:"name"`
 	Rarity       int    `json:"rarity"`

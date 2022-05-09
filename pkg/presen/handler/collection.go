@@ -27,7 +27,7 @@ func NewCollectionHandler(collectionUsecase usecase.CollectionUsecase) Collectio
 func (ch *collectionHandler) List(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		logger.ErrorLogging("GET collection/list: method not allowed", customError.ErrMethodNotFound, r)
+		logger.ErrorLogging("GET collection/list: method not ", customError.ErrMethodNotFound, r)
 		return
 	}
 
@@ -39,10 +39,10 @@ func (ch *collectionHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var collections []response.CollectionType
+	var collections []response.CollectionItem
 	for _, uce := range ucEntities {
-		collection := response.CollectionType{
-			CollectionID: strconv.Itoa(uce.User.Id),
+		collection := response.CollectionItem{
+			CollectionID: strconv.Itoa(uce.Id),
 			Name:         uce.Chara.Name,
 			Rarity:       uce.Chara.Rarity,
 			HasItem:      true,
