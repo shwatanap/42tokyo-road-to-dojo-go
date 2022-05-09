@@ -56,7 +56,7 @@ func (uh *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 
 	je := json.NewEncoder(w)
 	if err := je.Encode(res); err != nil {
@@ -106,14 +106,12 @@ func (uh *userHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var req request.UserUpdateRequest
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&req)
-
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		logger.ErrorLogging("POST user/update: decode error", err, r)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 
 	token := r.Context().Value(middleware.Token).(string)
 	_, err = uh.userUsecase.Update(r.Context(), req.Name, token)
