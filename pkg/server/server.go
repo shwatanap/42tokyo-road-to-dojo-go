@@ -17,16 +17,13 @@ func Serve(addr string) {
 
 	/* ===== URLマッピングを行う ===== */
 	http.HandleFunc("/setting/get", get(handler.HandleSettingGet()))
+
 	db := sql.NewDriver()
 	userHandler := wire.InitUserHandler(db)
 	userCreate := http.HandlerFunc(userHandler.Create)
-	http.HandleFunc("/user/create", post(middleware.Logger(userCreate)))
+	http.HandleFunc("/user/create", post(middleware.Layers(userCreate)))
 	userGet := http.HandlerFunc(userHandler.Get)
-	http.HandleFunc("/user/get", get(middleware.Logger(userGet)))
-	// TODO: 認証を行うmiddlewareを実装する
-	// middlewareは pkg/http/middleware パッケージを利用する
-	// http.HandleFunc("/user/get",
-	//   get(middleware.Authenticate(handler.HandleUserGet())))
+	http.HandleFunc("/user/get", get(middleware.AuthLayers(userGet)))
 
 	/* ===== サーバの起動 ===== */
 	log.Println("Server running...")
