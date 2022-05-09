@@ -21,3 +21,11 @@ func InitUserHandler(driver *sql.DB) handler.UserHandler {
 	userHandler := handler.NewUserHandler(userUsecase)
 	return userHandler
 }
+
+func InitCollectionHandler(driver *sql.DB) handler.CollectionHandler {
+	userRepository := repository.NewUserRepository(driver)
+	userCharaRepository := repository.NewUserCharaRepository(driver)
+	collectionUsecase := usecase.NewCollectionUsecase(userRepository, userCharaRepository)
+	collectionHandler := handler.NewCollectionHandler(collectionUsecase)
+	return collectionHandler
+}
