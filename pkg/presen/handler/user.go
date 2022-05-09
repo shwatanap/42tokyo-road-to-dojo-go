@@ -6,6 +6,7 @@ import (
 
 	customError "42tokyo-road-to-dojo-go/pkg/core/error"
 	"42tokyo-road-to-dojo-go/pkg/core/logger"
+	"42tokyo-road-to-dojo-go/pkg/http/middleware"
 	"42tokyo-road-to-dojo-go/pkg/presen/request"
 	"42tokyo-road-to-dojo-go/pkg/presen/response"
 	"42tokyo-road-to-dojo-go/pkg/usecase"
@@ -71,7 +72,7 @@ func (uh *userHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := r.Header.Get("X-Token")
+	token := r.Context().Value(middleware.Token).(string)
 	if token == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		logger.ErrorLogging("GET user/get: x-token not found error", customError.ErrTokenNotFound, r)
@@ -79,7 +80,6 @@ func (uh *userHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	targetUser, err := uh.userUsecase.Get(r.Context(), token)
-
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		logger.ErrorLogging("GET user/get: exec error", err, r)

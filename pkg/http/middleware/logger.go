@@ -7,7 +7,7 @@ import (
 	"42tokyo-road-to-dojo-go/pkg/core/logger"
 )
 
-func Logger(next http.Handler) http.HandlerFunc {
+func Logger(next http.HandlerFunc) http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(rw, r)
