@@ -24,6 +24,8 @@ func Serve(addr string) {
 	http.HandleFunc("/user/create", post(middleware.Layers(userCreate)))
 	userGet := http.HandlerFunc(userHandler.Get)
 	http.HandleFunc("/user/get", get(middleware.AuthLayers(userGet)))
+	userUpdate := http.HandlerFunc(userHandler.Update)
+	http.HandleFunc("/user/update", post(middleware.AuthLayers(userUpdate)))
 
 	/* ===== サーバの起動 ===== */
 	log.Println("Server running...")

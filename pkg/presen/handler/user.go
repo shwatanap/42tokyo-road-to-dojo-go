@@ -15,6 +15,7 @@ import (
 type UserHandler interface {
 	Create(http.ResponseWriter, *http.Request)
 	Get(http.ResponseWriter, *http.Request)
+	Update(http.ResponseWriter, *http.Request)
 }
 
 type userHandler struct {
@@ -73,12 +74,6 @@ func (uh *userHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := r.Context().Value(middleware.Token).(string)
-	if token == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		logger.ErrorLogging("GET user/get: x-token not found error", customError.ErrTokenNotFound, r)
-		return
-	}
-
 	targetUser, err := uh.userUsecase.Get(r.Context(), token)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -98,5 +93,32 @@ func (uh *userHandler) Get(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		logger.ErrorLogging("GET user/get: encode error", err, r)
 		return
+	}
+}
+
+func (uh *userHandler) Update(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		logger.ErrorLogging("POST user/update: method not allowed", customError.ErrMethodNotFound, r)
+		return
+	}
+
+	var req request.UserUpdateRequest
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&req)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		logger.ErrorLogging("POST user/update: decode error", err, r)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
+
+	token := r.Context().Value(middleware.Token).(string)
+	_, err = uh.userUsecase.Update(r.Context(), req.Name, token)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		logger.ErrorLogging("POST user/update: exec error", err, r)
 	}
 }

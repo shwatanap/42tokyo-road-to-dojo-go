@@ -80,3 +80,20 @@ func (ur *userRepository) Get(ctx context.Context, token string) (*entity.User, 
 
 	return ue, nil
 }
+
+func (ur *userRepository) Update(ctx context.Context, name string, token string) (*entity.User, error) {
+	const update = `UPDATE users Set name = ? WHERE token = ?`
+
+	ue := &entity.User{}
+	stmt, err := ur.db.PrepareContext(ctx, update)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, name, token)
+	if err != nil {
+		return nil, err
+	}
+	return ue, nil
+}
