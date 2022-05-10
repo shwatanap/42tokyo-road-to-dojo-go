@@ -29,3 +29,10 @@ func InitCollectionHandler(driver *sql.DB) handler.CollectionHandler {
 	collectionHandler := handler.NewCollectionHandler(collectionUsecase)
 	return collectionHandler
 }
+
+func InitRankingHandler(driver *sql.DB) handler.RankingHandler {
+	userRepository := repository.NewUserRepository(driver)
+	rankingUsecase := usecase.NewRankingUsecase(userRepository)
+	rankingHandler := handler.NewRankingHandler(rankingUsecase)
+	return rankingHandler
+}

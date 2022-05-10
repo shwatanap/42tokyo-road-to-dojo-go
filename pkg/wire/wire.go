@@ -31,3 +31,12 @@ func InitCollectionHandler(driver *sql.DB) handler.CollectionHandler {
 	)
 	return nil
 }
+
+func InitRankingHandler(driver *sql.DB) handler.RankingHandler {
+	wire.Build(
+		repository.NewUserRepository,
+		usecase.NewRankingUsecase,
+		handler.NewRankingHandler,
+	)
+	return nil
+}
