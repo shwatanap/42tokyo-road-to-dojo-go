@@ -32,6 +32,10 @@ func Serve(addr string) {
 	collectionList := http.HandlerFunc(collectionHandler.List)
 	http.HandleFunc("/collection/list", get(middleware.AuthLayers(collectionList)))
 
+	rankingHandler := wire.InitRankingHandler(db)
+	rankingList := http.HandlerFunc(rankingHandler.List)
+	http.HandleFunc("/ranking/list", get(middleware.AuthLayers(rankingList)))
+
 	/* ===== サーバの起動 ===== */
 	log.Println("Server running...")
 	err := http.ListenAndServe(addr, nil)
