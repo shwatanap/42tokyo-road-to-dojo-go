@@ -55,6 +55,36 @@ func (ur *userRepository) Create(ctx context.Context, name string) (*entity.User
 	return ue, nil
 }
 
+func (ur *userRepository) LimitGet(ctx context.Context, start int) ([]*entity.User, error) {
+	const read = `SELECT id, name, token, high_score, coin FROM users ORDER BY high_score DESC LIMIT ? OFFSET ?`
+
+	stmt, err := ur.db.PrepareContext(ctx, read)
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.QueryContext(ctx, 10, start)
+	if err != nil {
+		return nil, err
+	}
+
+	var entities []*entity.User
+	for rows.Next() {
+		ue := &entity.User{}
+
+		err := rows.Scan(&ue.Id, &ue.Name, &ue.Token, &ue.HighScore, &ue.Coin)
+		if err != nil {
+			return nil, err
+		}
+
+		entities = append(entities, ue)
+	}
+
+	return entities, nil
+}
+
 func (ur *userRepository) Get(ctx context.Context, token string) (*entity.User, error) {
 	const read = `SELECT id, name, token, high_score, coin FROM users WHERE token = ?`
 
